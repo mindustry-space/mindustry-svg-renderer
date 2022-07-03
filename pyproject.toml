@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mindustry-sprite-renderer"
+name = "mindustry-svg-renderer"
 version = "0.1.0"
 description = ""
 authors = ["Joel <joel@joel.tokyo>"]

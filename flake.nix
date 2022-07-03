@@ -13,19 +13,19 @@
         with pkgs;
         rec {
           devShells = rec {
-            default = mindustry-sprite-renderer;
-            mindustry-sprite-renderer = (poetry2nix.mkPoetryEnv { projectDir = ./.; }).env;
+            default = mindustry-svg-renderer;
+            mindustry-svg-renderer = (poetry2nix.mkPoetryEnv { projectDir = ./.; }).env;
           };
 
           packages = (self.overlays.default pkgs pkgs) // {
-            default = packages.mindustry-sprite-renderer;
+            default = packages.mindustry-svg-renderer;
           };
         };
 
       overlays = rec {
-        default = mindustry-sprite-renderer;
-        mindustry-sprite-renderer = final: _prev: {
-          mindustry-sprite-renderer = final.poetry2nix.mkPoetryApplication { projectDir = ./.; };
+        default = mindustry-svg-renderer;
+        mindustry-svg-renderer = final: _prev: {
+          mindustry-svg-renderer = final.poetry2nix.mkPoetryApplication { projectDir = ./.; };
         };
       };
     };
