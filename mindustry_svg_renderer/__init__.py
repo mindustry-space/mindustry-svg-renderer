@@ -121,7 +121,7 @@ def render(path: Path, *args: Any, **kwargs: Any) -> None:
         # Export
         keyboard.tap(Key.tab)
         keyboard.tap(Key.enter)
-        sleep(1)
+        sleep(3)
 
         # Quit
         tap_multiple(keyboard, [Key.ctrl, "q"])
