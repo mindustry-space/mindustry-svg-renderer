@@ -6,6 +6,7 @@ from subprocess import Popen
 from time import sleep
 from typing import Any, Iterable
 
+from PIL import Image
 from pynput.keyboard import Controller, Key
 from rich.logging import RichHandler
 
@@ -22,6 +23,17 @@ log = logging.getLogger(__name__)
 inkscape_path = Path("~/.config/inkscape").expanduser()
 
 
+def count_colours(image: Image) -> int:
+    # https://stackoverflow.com/a/51388568
+    return len(
+        {
+            image.getpixel((x, y))
+            for x in range(image.size[0])
+            for y in range(image.size[1])
+        }
+    )
+
+
 def tap_multiple(keyboard: Controller, keys: Iterable[Key]) -> None:
     for action in [keyboard.press, keyboard.release]:
         for key in keys:
@@ -36,6 +48,8 @@ def render(path: Path, *args: Any, **kwargs: Any) -> None:
     if svg_path.exists():
         log.warn(f"Replacing file {svg_path}")
         remove(svg_path)
+
+    colours = count_colours(Image.open(path))
 
     keyboard = Controller()
     with Popen(["inkscape", str(path)], *args, **kwargs):
@@ -71,7 +85,7 @@ def render(path: Path, *args: Any, **kwargs: Any) -> None:
         # Scans
         keyboard.tap(Key.tab)
         keyboard.tap(Key.tab)
-        keyboard.tap("8")  # TODO
+        keyboard.type(str(colours))
         # Stack: True
         keyboard.tap(Key.tab)
         keyboard.tap(Key.tab)

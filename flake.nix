@@ -17,6 +17,7 @@
             mindustry-svg-renderer = mkShell {
               packages = [
                 (python3.withPackages (ps: with ps; [
+                  pillow
                   pynput
                   rich
                 ]))
