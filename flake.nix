@@ -14,19 +14,17 @@
         rec {
           devShells = rec {
             default = mindustry-svg-renderer;
-            mindustry-svg-renderer = (poetry2nix.mkPoetryEnv { projectDir = ./.; }).env;
-          };
-
-          packages = (self.overlays.default pkgs pkgs) // {
-            default = packages.mindustry-svg-renderer;
+            mindustry-svg-renderer = mkShell {
+              packages = [
+                (python3.withPackages (ps: with ps; [
+                  pynput
+                  rich
+                ]))
+              ];
+            };
           };
         };
-
-      overlays = rec {
-        default = mindustry-svg-renderer;
-        mindustry-svg-renderer = final: _prev: {
-          mindustry-svg-renderer = final.poetry2nix.mkPoetryApplication { projectDir = ./.; };
-        };
-      };
     };
+
+  # TODO: evdev fails to build
 }
