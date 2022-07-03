@@ -5,6 +5,26 @@
   };
 
   outputs = { self, nixpkgs, utils } @ inputs:
+    let
+      overrides = pkgs:
+        pkgs.poetry2nix.overrides.withDefaults
+          (self: super: {
+            evdev = super.evdev.overridePythonAttrs (old: {
+              preConfigure = ''
+                substituteInPlace setup.py --replace /usr/include/linux ${pkgs.linuxHeaders}/include/linux
+              '';
+            });
+
+            pynput = super.pynput.overridePythonAttrs (old: {
+              nativeBuildInputs = (old.nativeBuildInputs or [ ])
+                ++ [ self.sphinx ];
+
+              propagatedBuildInputs = (old.propagatedBuildInputs or [ ])
+                ++ [ self.setuptools-lint ];
+            });
+          });
+    in
+
     utils.lib.mkFlake {
       inherit self inputs;
 
@@ -14,18 +34,25 @@
         rec {
           devShells = rec {
             default = mindustry-svg-renderer;
-            mindustry-svg-renderer = mkShell {
-              packages = [
-                (python3.withPackages (ps: with ps; [
-                  pillow
-                  pynput
-                  rich
-                ]))
-              ];
-            };
+            mindustry-svg-renderer = (poetry2nix.mkPoetryEnv {
+              overrides = overrides pkgs;
+              projectDir = ./.;
+            }).env;
+          };
+
+          packages = (self.overlays.default pkgs pkgs) // {
+            default = packages.mindustry-svg-renderer;
           };
         };
-    };
 
-  # TODO: evdev fails to build
+      overlays = rec {
+        default = mindustry-svg-renderer;
+        mindustry-svg-renderer = final: _prev: {
+          mindustry-svg-renderer = final.poetry2nix.mkPoetryApplication {
+            overrides = overrides final;
+            projectDir = ./.;
+          };
+        };
+      };
+    };
 }
