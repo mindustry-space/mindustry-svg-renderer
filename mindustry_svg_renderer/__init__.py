@@ -5,6 +5,7 @@ from shutil import rmtree
 from subprocess import Popen
 from time import sleep
 from typing import Any, Iterable
+from xml.etree import ElementTree
 
 from PIL import Image
 from pynput.keyboard import Controller, Key
@@ -19,8 +20,40 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-
 inkscape_path = Path("~/.config/inkscape").expanduser()
+
+IGNORED_KEYS = ["id", "height", "version", "width"]
+NAMESPACE = "http://www.w3.org/2000/svg"
+
+
+def bundle_svgs(paths: Iterable[Path], out: Path) -> None:
+    bundle: None | ElementTree.Element = None
+
+    for path in paths:
+        tree = ElementTree.parse(path)
+        root = tree.getroot()
+
+        if bundle is None:
+            bundle = ElementTree.Element("svg")
+            for key in ["xmlns", "xmlns:svg"]:
+                bundle.set(key, NAMESPACE)
+            if "version" in root.attrib:
+                bundle.set("version", root.attrib["version"])
+
+        symbol = ElementTree.SubElement(bundle, "symbol")
+        for key, value in root.attrib.items():
+            if key not in IGNORED_KEYS:
+                symbol.set(key, value)
+        symbol.set("id", path.stem)
+
+        for svg_path in root.findall(".//{" + NAMESPACE + "}path"):
+            symbol_path = ElementTree.SubElement(symbol, "path")
+            for key, value in svg_path.attrib.items():
+                if key not in IGNORED_KEYS:
+                    symbol_path.set(key, value)
+
+    if bundle is not None:
+        ElementTree.canonicalize(ElementTree.tostring(bundle), out=out.open("w"))
 
 
 def count_colours(image: Image) -> int:
@@ -33,8 +66,9 @@ def count_colours(image: Image) -> int:
         }
     )
 
+
 def get_svg_path(path: Path) -> Path:
-    return path.parent / (path.name[:-4] + ".svg")
+    return path.parent / (path.stem + ".svg")
 
 
 def tap_multiple(keyboard: Controller, keys: Iterable[Key]) -> None:

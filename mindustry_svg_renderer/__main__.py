@@ -4,16 +4,18 @@ from pathlib import Path
 from subprocess import check_output
 
 from rich.progress import track
+from rich.status import Status
 
-from . import get_svg_path, render
+from . import bundle_svgs, get_svg_path, render
 
 
 log = getLogger(__name__)
 
 parser = ArgumentParser()
 parser.add_argument("source", nargs="+", type=Path)
+parser.add_argument("-b", "--bundle", default=None, type=Path)
 parser.add_argument("-l", "--log-to", default=Path("inkscape.log"), type=Path)
-parser.add_argument("-s", "--skip-existing", action='store_true')
+parser.add_argument("-s", "--skip-existing", action="store_true")
 
 
 def main() -> None:
@@ -33,6 +35,10 @@ def main() -> None:
             if args.skip_existing and get_svg_path(path).exists():
                 continue
             render(path, stdout=log_to, stderr=log_to)
+
+    if args.bundle is not None:
+        with Status("Bundling..."):
+            bundle_svgs(map(get_svg_path, args.source), args.bundle)
 
 
 if __name__ == "__main__":
