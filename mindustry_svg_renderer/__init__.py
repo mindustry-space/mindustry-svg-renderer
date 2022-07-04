@@ -27,18 +27,13 @@ NAMESPACE = "http://www.w3.org/2000/svg"
 
 
 def bundle_svgs(paths: Iterable[Path], out: Path) -> None:
-    bundle: None | ElementTree.Element = None
+    bundle = ElementTree.Element("svg")
+    for key in ["xmlns", "xmlns:svg"]:
+        bundle.set(key, NAMESPACE)
 
     for path in paths:
         tree = ElementTree.parse(path)
         root = tree.getroot()
-
-        if bundle is None:
-            bundle = ElementTree.Element("svg")
-            for key in ["xmlns", "xmlns:svg"]:
-                bundle.set(key, NAMESPACE)
-            if "version" in root.attrib:
-                bundle.set("version", root.attrib["version"])
 
         symbol = ElementTree.SubElement(bundle, "symbol")
         for key, value in root.attrib.items():
@@ -52,8 +47,7 @@ def bundle_svgs(paths: Iterable[Path], out: Path) -> None:
                 if key not in IGNORED_KEYS:
                     symbol_path.set(key, value)
 
-    if bundle is not None:
-        ElementTree.canonicalize(ElementTree.tostring(bundle), out=out.open("w"))
+    ElementTree.canonicalize(ElementTree.tostring(bundle), out=out.open("w"))
 
 
 def count_colours(image: Image) -> int:
