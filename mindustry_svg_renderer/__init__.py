@@ -53,6 +53,8 @@ def render(path: Path, *args: Any, **kwargs: Any) -> None:
         remove(svg_path)
 
     colours = count_colours(Image.open(path))
+    if colours > 16:
+        log.warn(f"{path} has {colours} colours. Has anti-aliasing been disabled?")
 
     keyboard = Controller()
     with Popen(["inkscape", str(path)], *args, **kwargs):
