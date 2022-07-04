@@ -33,6 +33,9 @@ def count_colours(image: Image) -> int:
         }
     )
 
+def get_svg_path(path: Path) -> Path:
+    return path.parent / (path.name[:-4] + ".svg")
+
 
 def tap_multiple(keyboard: Controller, keys: Iterable[Key]) -> None:
     for action in [keyboard.press, keyboard.release]:
@@ -44,7 +47,7 @@ def render(path: Path, *args: Any, **kwargs: Any) -> None:
     if inkscape_path.exists():
         rmtree(inkscape_path)
 
-    svg_path = path.parent / (path.name[:-4] + ".svg")
+    svg_path = get_svg_path(path)
     if svg_path.exists():
         log.warn(f"Replacing file {svg_path}")
         remove(svg_path)
