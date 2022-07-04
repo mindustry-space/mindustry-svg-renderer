@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+parent=$(dirname "$PWD")
+
+cd "$parent/Mindustry/core/assets-raw/sprites_out/ui"
+mindustry-svg-renderer -s -b block.svg block-*.png
+mindustry-svg-renderer -s -b item.svg item-*.png
+mindustry-svg-renderer -s -b liquid.svg liquid-*.png
+mindustry-svg-renderer -s -b status.svg status-*.png
+mindustry-svg-renderer -s -b team.svg team-*.png
+mindustry-svg-renderer -s -b unit.svg unit-*.png
+cp block.svg item.svg liquid.svg status.svg team.svg unit.svg "$parent/mindustry-svgs"
