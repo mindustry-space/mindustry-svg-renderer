@@ -1,0 +1,37 @@
+From 433983372c162888058f0df182c679d452d543b1 Mon Sep 17 00:00:00 2001
+From: Joel <joel@joel.tokyo>
+Date: Mon, 4 Jul 2022 13:51:44 +1000
+Subject: [PATCH 4/4] fix: disable scaling icons and blocks
+
+---
+ tools/src/mindustry/tools/Generators.java | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/src/mindustry/tools/Generators.java b/tools/src/mindustry/tools/Generators.java
+index 91ea8e53c..24c85c32b 100644
+--- a/tools/src/mindustry/tools/Generators.java
++++ b/tools/src/mindustry/tools/Generators.java
+@@ -382,9 +382,9 @@ public class Generators{
+                     save(image, "../editor/" + block.name + "-icon-editor");
+ 
+                     if(block.buildVisibility != BuildVisibility.hidden){
+-                        saveScaled(image, block.name + "-icon-logic", logicIconSize);
++                        save(image, block.name + "-icon-logic");
+                     }
+-                    saveScaled(image, "../ui/block-" + block.name + "-ui", Math.min(image.width, maxUiIcon));
++                    save(image, "../ui/block-" + block.name + "-ui");
+ 
+                     boolean hasEmpty = false;
+                     Color average = new Color(), c = new Color();
+@@ -460,7 +460,7 @@ public class Generators{
+                     base = container.outline(Pal.gray, 3);
+                 }
+ 
+-                saveScaled(base, item.name + "-icon-logic", logicIconSize);
++                save(base, item.name + "-icon-logic");
+                 save(base, "../ui/" + item.getContentType().name() + "-" + item.name + "-ui");
+             }
+         });
+-- 
+2.31.1
+

@@ -1,0 +1,42 @@
+From aa310bd20550f5def8037b2478b4a318e09f5433 Mon Sep 17 00:00:00 2001
+From: Joel <jyooru+github@protonmail.ch>
+Date: Sat, 2 Jul 2022 14:10:03 +0000
+Subject: [PATCH 1/4] fix: IconConverter using deprecated inkscape --verb
+ option (#7106)
+
+* fix: IconConverter using deprecated inkscape --verb option
+
+* refactor: remove unused option in tools/build.gradle
+---
+ tools/build.gradle                           | 1 -
+ tools/src/mindustry/tools/IconConverter.java | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/tools/build.gradle b/tools/build.gradle
+index 94f24dc18..9334c0020 100644
+--- a/tools/build.gradle
++++ b/tools/build.gradle
+@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutorService
+ import java.util.concurrent.Executors
+ 
+ def genFolder = "../core/assets-raw/sprites_out/generated/"
+-def doAntialias = !project.hasProperty("disableAntialias")
+ def enableAA = true
+ 
+ @groovy.transform.CompileStatic
+diff --git a/tools/src/mindustry/tools/IconConverter.java b/tools/src/mindustry/tools/IconConverter.java
+index 50a7f1bb8..bb320a411 100644
+--- a/tools/src/mindustry/tools/IconConverter.java
++++ b/tools/src/mindustry/tools/IconConverter.java
+@@ -28,7 +28,7 @@ public class IconConverter{
+             }
+         }
+ 
+-        Seq<String> args = Seq.with("inkscape", "--batch-process", "--verb", "EditSelectAll;SelectionUnion;FitCanvasToSelectionOrDrawing;FileSave");
++        Seq<String> args = Seq.with("inkscape", "--batch-process", "--actions", "select-all; path-union; fit-canvas-to-selection; export-overwrite; export-do");
+         args.addAll(files.map(Fi::absolutePath));
+ 
+         Fi.get("fontgen/extra").findAll().each(f -> f.copyTo(Fi.get("fontgen/icons").child(f.name())));
+-- 
+2.31.1
+

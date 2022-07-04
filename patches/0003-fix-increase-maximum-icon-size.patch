@@ -1,0 +1,25 @@
+From e0a6fa5b7808ab275edefe0c573efe4c400a0450 Mon Sep 17 00:00:00 2001
+From: Joel <joel@joel.tokyo>
+Date: Mon, 4 Jul 2022 12:08:45 +1000
+Subject: [PATCH 3/4] fix: increase maximum icon size
+
+---
+ tools/src/mindustry/tools/Generators.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/src/mindustry/tools/Generators.java b/tools/src/mindustry/tools/Generators.java
+index b5702a994..91ea8e53c 100644
+--- a/tools/src/mindustry/tools/Generators.java
++++ b/tools/src/mindustry/tools/Generators.java
+@@ -27,7 +27,7 @@ import static mindustry.Vars.*;
+ import static mindustry.tools.ImagePacker.*;
+ 
+ public class Generators{
+-    static final int logicIconSize = (int)iconMed, maxUiIcon = 128;
++    static final int logicIconSize = (int)iconMed, maxUiIcon = Integer.MAX_VALUE;
+ 
+     private static float fluid(boolean gas, double x, double y, float frame){
+         int keyframes = gas ? 4 : 3;
+-- 
+2.31.1
+

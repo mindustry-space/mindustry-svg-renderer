@@ -1,0 +1,25 @@
+From 3d82d85039a20cefb80b99df7446af9cf1cb5211 Mon Sep 17 00:00:00 2001
+From: Joel <joel@joel.tokyo>
+Date: Sun, 3 Jul 2022 21:33:03 +1000
+Subject: [PATCH 2/4] fix: disable anti aliasing
+
+---
+ tools/build.gradle | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/build.gradle b/tools/build.gradle
+index 9334c0020..655acc5df 100644
+--- a/tools/build.gradle
++++ b/tools/build.gradle
+@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService
+ import java.util.concurrent.Executors
+ 
+ def genFolder = "../core/assets-raw/sprites_out/generated/"
+-def enableAA = true
++def enableAA = false
+ 
+ @groovy.transform.CompileStatic
+ static int getRGB(Pixmap image, int ix, int iy) {
+-- 
+2.31.1
+
