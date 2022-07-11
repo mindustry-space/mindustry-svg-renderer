@@ -9,7 +9,7 @@ license = "GPL-3.0"
 python = "^3.7"
 Pillow = "^9.2.0"
 pynput = "^1.7.6"
-rich = "^12.4.4"
+rich = "^12.5.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
